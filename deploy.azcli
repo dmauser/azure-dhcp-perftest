@@ -1,0 +1,65 @@
+# Check existing default Azure subscription
+az account list --query "[?isDefault == \`true\`].{Name:name, IsDefault:isDefault}" -o table --all
+
+# Change default Azure subscription as neeeded
+# az account set --subscription "Visual Studio Enterprise"
+
+# Parameters
+rgname="lab-dhcp-perftest"
+location="westeurope"
+azvnetname="az-vnet"
+azvnetprefix="10.1.0.0/24"
+azsubnetname="main"
+onpremvnetname="onprem-vnet"
+onpremvnetprefix="192.168.1.0/24"
+onpremsubnetname="main"
+vmsize="Standard_DS1_v2"
+username="azureuser"
+password="Msft123Msft123"
+
+# Create a resource group.
+echo "Creating resource group..."
+az group create --name $rgname --location $location -o none
+
+# Create Azure VNET and subnet
+echo "Creating Azure VNET and subnet..."
+az network vnet create --resource-group $rgname --name $azvnetname --address-prefixes $azvnetprefix --subnet-name $azsubnetname --subnet-prefixes $azvnetprefix -o none
+# Create On-prem VNET and subnet
+az network vnet create --resource-group $rgname --name $onpremvnetname --address-prefixes $onpremvnetprefix --subnet-name $onpremsubnetname --subnet-prefixes $onpremvnetprefix -o none
+
+# Create VNET peering between on-prem and Azure VNETs
+echo "Creating VNET peering between on-prem and Azure VNETs..."
+az network vnet peering create --resource-group $rgname --name $azvnetname-to-$onpremvnetname --vnet-name $azvnetname --remote-vnet $onpremvnetname --allow-vnet-access -o none
+az network vnet peering create --resource-group $rgname --name $onpremvnetname-to-$azvnetname --vnet-name $onpremvnetname --remote-vnet $azvnetname --allow-vnet-access -o none
+
+# Create NSG and associate to all subnets
+echo "Creating NSG and associating to all subnets..."
+az network nsg create --resource-group $rgname --name nsg-$location -o none
+az network vnet subnet update --resource-group $rgname --vnet-name $azvnetname --name $azsubnetname --network-security-group nsg-$location -o none
+az network vnet subnet update --resource-group $rgname --vnet-name $onpremvnetname --name $onpremsubnetname --network-security-group nsg-$location -o none
+
+# Create Azure VM
+echo "Creating VMs..."
+az vm create --resource-group $rgname --name az-dhcp-server --vnet-name $azvnetname --subnet $azsubnetname --public-ip-address "" --nsg "" --image Ubuntu2204 --size $vmsize --admin-username $username --admin-password $password --no-wait -o none --only-show-errors
+# Create On-prem VM
+az vm create --resource-group $rgname --name onprem-dhcp-client --vnet-name $onpremvnetname --subnet $onpremsubnetname --public-ip-address "" --nsg "" --image Ubuntu2204 --size $vmsize --admin-username $username --admin-password $password --no-wait -o none --only-show-errors
+
+# Use a for loop to wait for all VMs to be ready
+echo "Waiting for VMs to be ready..."
+for vm in $(az vm list --resource-group $rgname --query "[].name" -o tsv)
+do
+    az vm wait --resource-group $rgname --name $vm --created -o none
+done
+
+# Enable boot diagnostics all vms in the resource group
+echo "Enabling boot diagnostics for all VMs in the resource group..."
+az vm boot-diagnostics enable --ids $(az vm list --resource-group $rgname --query "[].id" -o tsv) -o none
+
+# Enable auto-shutdown for all vms in the resource group at 4am UTC
+echo "Enabling auto-shutdown for all VMs in the resource group at 4am UTC..."
+az vm auto-shutdown --ids $(az vm list --resource-group $rgname --query "[].id" -o tsv) --time 0400 -o none
+
+# Clean up resources
+# echo "Deleting resource group..." by running the command below
+# az group delete --name $rgname --no-wait -o none --yes
+
