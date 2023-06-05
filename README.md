@@ -16,7 +16,7 @@ Step 2 - Run DHCP performance tests on the DHCP Client
 
 Here are some examples:
 
-1. 10 DHCP requests per second for 30 seconds
+1. 10 DHCP requests/sec for 30 seconds duration.
 
 ```bash
 sudo perfdhcp -r 10 -p 30 10.1.0.4
@@ -62,7 +62,7 @@ std deviation: 0.591 ms
 collected packets: 0
 ```
 
-2. 1000 DHCP requests/sec for 60 seconds
+2. 1000 DHCP requests/sec for 60 seconds duration.
 
 ```bash
 sudo perfdhcp -r 1000 -p 60 10.1.0.4
