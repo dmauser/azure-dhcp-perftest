@@ -4,8 +4,9 @@ DISCLAIMER: This is proof of concept only and should not use as official guidanc
 
 ## Instructions
 
-Use the steps below to validate DHCP performance.
-Credits and reference: [Kea DHCP4 Basic Performance Testing](https://www.youtube.com/watch?v=IW3eXTM9skc)
+- Use the steps below to validate DHCP performance.
+- Credits and reference: [Kea DHCP4 Basic Performance Testing](https://www.youtube.com/watch?v=IW3eXTM9skc)
+- All VMs are accessible via Serial Console. You can install Bastion for a better remote access experience.
 
 Step 1 - Deploy DHCP Server and Client
 
