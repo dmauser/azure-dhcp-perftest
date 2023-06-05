@@ -1,4 +1,4 @@
-# DHCP Performance test
+# DHCP Performance Testing
 
 **DISCLAIMER: This is proof of concept only and should not use as official guidance.**
 
