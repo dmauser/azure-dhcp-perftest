@@ -19,7 +19,7 @@ password="Msft123Msft123"
 
 # Create a resource group.
 echo "Creating resource group..."
-az group create --name $rgname --location $location -o none
+az group create --name $rgname-$location --location $location -o none
 
 # Create Azure VNET and subnet
 echo "Creating Azure VNET and subnet..."
