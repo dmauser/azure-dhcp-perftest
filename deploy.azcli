@@ -51,24 +51,6 @@ do
     az vm wait --resource-group $rgname-$location --name $vm --created -o none
 done
 
-# Enable boot diagnostics all vms in the resource group
-echo "Enabling boot diagnostics for all VMs in the resource group..."
-az vm boot-diagnostics enable --ids $(az vm list --resource-group $rgname-$location --query "[].id" -o tsv) -o none
-
-echo Installing tools for networking connectivity validation such as traceroute, tcptraceroute, iperf and others  
-nettoolsuri="https://raw.githubusercontent.com/dmauser/azure-vm-net-tools/main/script/nettools2204.sh"
-for vm in `az vm list -g $rgname-$location --query "[?contains(storageProfile.imageReference.offer, 'ubuntu')].name" -o tsv`
-do
- az vm extension set \
- --resource-group $rgname-$location \
- --vm-name $vm \
- --name customScript \
- --publisher Microsoft.Azure.Extensions \
- --protected-settings "{\"fileUris\": [\"$nettoolsuri\"],\"commandToExecute\": \"./nettools2204.sh\"}" \
- --force-update \
- --no-wait
-done
-
 # Enable auto-shutdown for all vms in the resource group at 4am UTC
 echo "Enabling auto-shutdown for all VMs in the resource group at 4am UTC..."
 az vm auto-shutdown --ids $(az vm list --resource-group $rgname-$location --query "[].id" -o tsv) --time 0400 -o none
@@ -96,5 +78,3 @@ az vm extension set \
  --protected-settings "{\"fileUris\": [\"$dhcpserveruri\"],\"commandToExecute\": \"./dhcpserver.sh\"}" \
  --force-update \
  --no-wait
-
-
