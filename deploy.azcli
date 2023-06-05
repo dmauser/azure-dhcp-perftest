@@ -97,7 +97,4 @@ az vm extension set \
  --force-update \
  --no-wait
 
-# Clean up resources
-# echo "Deleting resource group..." by running the command below
-# az group delete --name $rgname --no-wait -o none --yes
 
