@@ -2,7 +2,7 @@
 
 DISCLAIMER: This is proof of concept only and should not use as official guidance.
 
-## Instructions
+### Instructions
 
 - Use the steps below to validate DHCP performance.
 - Credits and reference: [Kea DHCP4 Basic Performance Testing](https://www.youtube.com/watch?v=IW3eXTM9skc)
@@ -65,7 +65,7 @@ collected packets: 0
 2. 1000 DHCP requests/sec for 60 seconds
 
 ```bash
-sudo perfdhcp -r 10 -p 30 10.1.0.4
+sudo perfdhcp -r 1000 -p 60 10.1.0.4
 ```
 
 Expected output:
@@ -108,6 +108,7 @@ std deviation: 3.445 ms
 collected packets: 1
 ```
 
-Notes:
+### Notes:
+
 - Use the **top** command on DHCP Server to check CPU utilization (kea-dhp4 process).
 - The VMs use Standard DS1 v2 (1 vcpu, 3.5 GiB memory). You can Resize DHCP Server to improve the results if you get a high CPU or many DHCP request/response drops.
