@@ -51,6 +51,10 @@ do
     az vm wait --resource-group $rgname-$location --name $vm --created -o none
 done
 
+# Enable boot diagnostics all vms in the resource group
+echo "Enabling boot diagnostics for all VMs in the resource group..."
+az vm boot-diagnostics enable --ids $(az vm list --resource-group $rgname-$location --query "[].id" -o tsv) -o none
+
 # Enable auto-shutdown for all vms in the resource group at 4am UTC
 echo "Enabling auto-shutdown for all VMs in the resource group at 4am UTC..."
 az vm auto-shutdown --ids $(az vm list --resource-group $rgname-$location --query "[].id" -o tsv) --time 0400 -o none
@@ -78,3 +82,4 @@ az vm extension set \
  --protected-settings "{\"fileUris\": [\"$dhcpserveruri\"],\"commandToExecute\": \"./dhcpserver.sh\"}" \
  --force-update \
  --no-wait
+ 
