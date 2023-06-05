@@ -69,11 +69,21 @@ do
  --no-wait
 done
 
-
-
 # Enable auto-shutdown for all vms in the resource group at 4am UTC
 echo "Enabling auto-shutdown for all VMs in the resource group at 4am UTC..."
 az vm auto-shutdown --ids $(az vm list --resource-group $rgname --query "[].id" -o tsv) --time 0400 -o none
+
+# Configure DHCP client using custom script extension
+echo "Configuring DHCP client using custom script extension..."
+dhcpclienturi="https://raw.githubusercontent.com/dmauser/azure-vm-net-tools/main/script/dhcpclient.sh"
+az vm extension set \
+ --resource-group $rgname \
+ --vm-name onprem-dhcp-client \
+ --name customScript \
+ --publisher Microsoft.Azure.Extensions \
+ --protected-settings "{\"fileUris\": [\"$dhcpclienturi\"],\"commandToExecute\": \"./dhcpclient.sh\"}" \
+ --force-update \
+ --no-wait  
 
 # Clean up resources
 # echo "Deleting resource group..." by running the command below
