@@ -1,6 +1,6 @@
 # DHCP Performance test
 
-DISCLAIMER: This is proof of concept only and should not use as official guidance.
+**DISCLAIMER: This is proof of concept only and should not use as official guidance.**
 
 ### Instructions
 
