@@ -111,4 +111,4 @@ collected packets: 1
 ### Notes:
 
 - Use the **top** command on DHCP Server to check CPU utilization (kea-dhp4 process).
-- The VMs use Standard DS1 v2 (1 vcpu, 3.5 GiB memory). You can Resize DHCP Server to improve the results if you get a high CPU or many DHCP request/response drops.
+- The VMs use Standard DS1 v2 (1 vcpu, 3.5 GiB memory). You can resize DHCP Server VM to improve the results if you get a high CPU or many DHCP request/response drops.
