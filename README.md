@@ -10,7 +10,7 @@ DISCLAIMER: This is proof of concept only and should not use as official guidanc
 
 Step 1 - Deploy DHCP Server and Client
 
-![deploy](deploy.azcli)
+[deploy.azcli](https://github.com/dmauser/azure-dhcp-perftest/blob/main/deploy.azcli)
 
 Step 2 - Run DHCP performance tests on the DHCP Client
 
