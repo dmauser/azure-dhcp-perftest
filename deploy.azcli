@@ -75,7 +75,7 @@ az vm auto-shutdown --ids $(az vm list --resource-group $rgname --query "[].id" 
 
 # Configure DHCP client using custom script extension
 echo "Configuring DHCP client using custom script extension..."
-dhcpclienturi="https://raw.githubusercontent.com/dmauser/azure-vm-net-tools/main/script/dhcpclient.sh"
+dhcpclienturi="https://raw.githubusercontent.com/dmauser/azure-dhcp-perftest/main/script/dhcpclient.sh"
 az vm extension set \
  --resource-group $rgname \
  --vm-name onprem-dhcp-client \
@@ -84,6 +84,18 @@ az vm extension set \
  --protected-settings "{\"fileUris\": [\"$dhcpclienturi\"],\"commandToExecute\": \"./dhcpclient.sh\"}" \
  --force-update \
  --no-wait  
+
+# Configure DHCP server using custom script extension
+echo "Configuring DHCP server using custom script extension..."
+dhcpserveruri="https://raw.githubusercontent.com/dmauser/azure-dhcp-perftest/main/script/dhcpserver.sh"
+az vm extension set \
+ --resource-group $rgname \
+ --vm-name az-dhcp-server \
+ --name customScript \
+ --publisher Microsoft.Azure.Extensions \
+ --protected-settings "{\"fileUris\": [\"$dhcpserveruri\"],\"commandToExecute\": \"./dhcpserver.sh\"}" \
+ --force-update \
+ --no-wait
 
 # Clean up resources
 # echo "Deleting resource group..." by running the command below
